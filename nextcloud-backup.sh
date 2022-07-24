@@ -1,6 +1,6 @@
 #!/bin/bash
 # set userid for execution 0=root 33=www-data 1000=First User Created
-uid=0
+uid=1000
 
 ## Set verbose 0=normal output 1=no output 2=no output only report
 verbose=0
@@ -48,9 +48,9 @@ fi
 ##
 ## for restoring Nextcloud
 ## $> echo SQL-root-password | base64 > db_auth.cfg && sed -i '1s/^/DB_NC=/' db_auth.cfg; sleep 2 && chmod 400
-source /home/vincent/bin/db_auth.cfg
+source db_auth.cfg
 ## Backup Location
-BACKUP_DIR='/media/nextcloud-backup'
+BACKUP_DIR=''
 ## Nextcloud installation Directory
 NCPATH='/var/www/nextcloud'
 ## Apache user
@@ -137,7 +137,7 @@ fi
 
 
 ## Start Writing Report Message / HTML
-REPORT=$(printf "\n Backup Report \n Direct Link: https://www.vstans.nl/report.html ")
+REPORT=$(printf "\n Backup Report \n")
 HTML=$(printf '<!DOCTYPE html>
 <head>
     <meta charset="UTF-8" />
@@ -271,7 +271,7 @@ h1 {
 </style>
 </head>
 ')
-HTML+=$(printf "\n<body>\n<h2>BACKUP REPORT.</h2><br />\n<a href=\"https://www.vstans.nl/report.htm\">Link to html</a>")
+HTML+=$(printf "\n<body>\n<h2>BACKUP REPORT.</h2><br />\n")
 
 
 
@@ -974,18 +974,6 @@ sendmessage() {
     clear 1>&3
     echo "${1}" 1>&3
  fi
-
- if [[ $ans == 11 || $ans == 03 ]]; then
-    mail -s "Backup Report" -a "FROM:Backup Script <noreply@vstans.nl>" -r "noreply@vstans.nl" root <<< "${1}"
-#    mail -s "Backup Report" -a "Content-type: text/html;" -a "FROM:Backup Script <noreply@vstans.nl>" -r "noreply@vstans.nl" root <<< "${1}"
-
-    rm /var/www/html/report.htm
-    fileX=$(echo $RANDOM)
-    printf "$2" > /tmp/$fileX
-    curl -k -u "vincent@vstans.nl:${mdbp}" -T "/tmp/$fileX" "https://cloud.vstans.nl/remote.php/webdav/Backup/logs/backup-log-${SBT}.htm"
-    sudo -u www-data ln -s /cloud/vincent@vstans.nl/files/Backup/logs/backup-log-${SBT}.htm /var/www/html/report.htm
-    rm /tmp/$fileX
- fi
 }
 
 
@@ -1008,7 +996,7 @@ function usage {
 if [[ -z ${BACKUP_DIR} ]]; then
     printf "\n\n No Backup Directory set \n Please Enter a mount point." 1>&3
     read -p " > " link
-    sed -i "/^BACKUP_DIR=/cBACKUP_DIR='$link'" /home/vincent/bin/${SCRIPT}
+    sed -i "/^BACKUP_DIR=/cBACKUP_DIR='$link'" ${SCRIPT}
 fi
 printf "\n\n This script makes a copy of: \n Nextcloud installation directory \n Nextcloud UserData \n MySQL Database" 1>&3
 printf "\n\n Please check that the following settings are correct: \n Running NC Version: ${VERSION} \n ${ul}Nextcloud Installation Directory${n}: ${red}${b}${NCPATH}${n}" 1>&3
@@ -1021,7 +1009,7 @@ printf "\n The Folder structure will be: \n ${BACKUP_DIR}/week_number/day_number
 if [[ $uid == 1000 ]]; then
     printf "\n\n This script needs to be run as ${red}root${n}\n" 1>&3
     prompt_confirm " Set Root " || exit 1
-    sed -i "/^uid=1000/cuid=0" /home/vincent/bin/${SCRIPT}
+    sed -i "/^uid=1000/cuid=0" ${SCRIPT}
     echo 1>&3
     exit 5
 fi
