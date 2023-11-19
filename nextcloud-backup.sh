@@ -65,8 +65,10 @@ config="${NCPATH}/config/config.php"
 ## Grab the current nextcloud version
 VERSION=$(cat ${NCPATH}/version.php | head -n 2 | tail -n1 | awk '{ print $3 }' | cut -c 7-14 | sed 's/,/./g')
 
+occ_call="sudo -u www-data php -f ${NCPATH}/occ"
+
 ## Maintenance Mode
-getmm=$(cat ${config} | grep maintenance | cut -d '>' -f2)
+getmm=$($occ_call config:system:get maintenance)
 if [[ ${getmm} == *true* ]]; then
         MM='on'
     else
@@ -74,20 +76,16 @@ if [[ ${getmm} == *true* ]]; then
 fi
 
 ## Grab datadirectory
-datadirectory=$(cat ${config} | grep datadirectory | cut -d'>' -f2 | cut -c3-)
-DATADIR=${datadirectory::-2}
+DATADIR="$($occ_call config:system:get datadirectory)"
 
 ## Grab Database name
-dbname=$(cat ${config} | grep dbname | cut -d'>' -f2 | cut -c3-)
-DATABASE=${dbname::-2}
+DATABASE="$($occ_call config:system:get dbname)"
 
 ## Grab username
-dbuser=$(cat ${config} | grep dbuser | cut -d'>' -f2 | cut -c3-)
-SQLUSER=${dbuser::-2}
+SQLUSER="$($occ_call config:system:get dbuser)"
 
 ## Grab passwords
-dbpass=$(cat ${config} | grep dbpass | cut -d'>' -f2 | cut -c3-)
-DBP=${dbpass::-2}
+DBP="$($occ_call config:system:get dbpassword)"
 
 ## Grab instanceID
 iID=$(cat ${config} | grep instance | cut -d'>' -f2 | cut -c3-)
