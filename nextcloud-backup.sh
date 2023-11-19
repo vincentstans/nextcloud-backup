@@ -134,146 +134,8 @@ else
 fi
 }
 
-
-
 ## Start Writing Report Message / HTML
 REPORT=$(printf "\n Backup Report \n")
-HTML=$(printf '<!DOCTYPE html>
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Backup Report</title>
-    <meta name="author" content="Backup Script" />
-    
-    <!-- Scrollbox CSS -->
-<style>
-/*
- CSS for the main interaction
-*/
-.scrollbox > input[name="collapse"] {
-  display: none;
-  
-  /*position: absolute;
-  left: -100vw;*/
-}
-
-.scrollbox label,
-.scrollbox .content{
- max-width: 720px;
-  margin: 0 10;
- }
-
-.scrollbox .content {
-  background: #fff;
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 0;
-  transition: 0.5s;
-  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.scrollbox > input[name="collapse"]:checked ~ .content {
-  height: 260px;
-  transition: height 0.5s;
-}
-
-.scrollbox label {
-  display: block;
-}
-
-/* For Desktop */
-@media only screen and (min-width: 620px){
-.scrollbox > input[name="collapse"]:checked ~ .content {
-  height: 260px;
-}
-}
-
-.scrollbox {
-  margin-bottom: 1em;
-}
-
-.scrollbox > input[name="collapse"]:checked ~ .content {
-  border-top: 0;
-  transition: 0.3s;
-}
-
-.scrollbox .handle {
-  margin: 0;
-  font-size: 16px;
-}
-
-.scrollbox label {
-  color: #fff;
-  cursor: pointer;
-  font-weight: normal;
-  padding: 10px;
-  background: #b0100c;
-  user-select: none;
-}
-
-.scrollbox label:hover,
-.scrollbox label:focus {
-  background: #252525;
-}
-
-.scrollbox .handle label:before {
-/*  font-family: FontAwesome;
-  content: "\f107"; */
-  display: inline-block;
-  margin-right: 10px;
-  font-size: 1em;
-  line-height: 1.556em;
-  vertical-align: middle;
-  transition: 0.4s;
-}
-
-.scrollbox > input[name="collapse"]:checked ~ .handle label:before {
-    transform: rotate(180deg);
-    transform-origin: center;
-    transition: 0.4s;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
-
-body {
-  background: #ccc;
-  padding: 10px;
-}
-
-a {
-  color: #06c;
-}
-
-p {
-  margin: 0 0 1em;
-  padding: 10px;
-}
-
-h1 {
-  margin: 0 0 1.5em;
-  font-weight: 600;
-  font-size: 1.5em;
-}
-
-.scrollbox p:last-child {
-  margin-bottom: 0;
-}
-
-.container{
-    max-width: 720px;
-    margin: 0 10;
-}
-</style>
-</head>
-')
-HTML+=$(printf "\n<body>\n<h2>BACKUP REPORT.</h2><br />\n")
-
-
 
 function menu {
  echo 1>&3
@@ -300,11 +162,7 @@ fi
 #echo "Maybe try \$ sudo bash -c ${SCRIPT} [NUMBER]" | pv -qL 25
 }
 
-
 REPORT+=$(printf "\n\n Week nr: $WEEK \n Day of the week: $DOW \n Current Nextcloud Version: ${VERSION} \n Date variable: ${SBT}")
-HTML+=$(printf "<br />\n<p> Week nr: <b>$WEEK</b><br />\n Day of the week: <b>$DOW</b> <br />\n Current Nextcloud Version: <b>${VERSION}</b><br />\n Date variable: <b>${SBT}</b></p><br />")
-
-
 
 function startup {
 if [[ ! -z $ARG ]]; then
@@ -317,7 +175,6 @@ if [[ ! -z $ARG ]]; then
     ans=$ARG
     finished=1
     REPORT+=$(printf "\n ${SCRIPT} Argument given: ${ARG}")
-    HMTL+=$(printf "<br />\n<p> ${SCRIPT} Argument given: <b>${ARG}</b></p><br />")
 elif [[ $finished == "1" ]]; then
     quit
 else
@@ -332,43 +189,36 @@ fi
 
 if [[ $ans == "1" ]]; then
     REPORT+=$(printf "\n\n Selected Menu: $ans. Maintenance Mode")
-    HTML+=$(printf "\n<br /> Selected Menu: $ans. Maintenance Mode")
     production
     ARG=
     startup
 elif [[ $ans == "2" ]]; then
     REPORT+=$(printf "\n\n Selected Menu: $ans. Full Backup")
-    HTML+=$(printf "\n<br /> Selected Menu: $ans. Full Backup")
     full
     ARG=
     startup
 elif [[ $ans == "3" ]]; then
     REPORT+=$(printf "\n\n Selected Menu: $ans. Incremental Backup")
-    HTML+=$(printf "\n<br /> Selected Menu: $ans. Incremental Backup")
     ibackup
     ARG=
     startup
 elif [[ $ans == "4" ]]; then
     REPORT+=$(printf "\n\n Selected Menu: $ans. Restore Backup")
-    HTML+=$(printf "\n<br /> Selected Menu: $ans. Restore Backup")
     restore
     ARG=
     startup
 elif [[ $ans == "5" ]]; then
     REPORT+=$(printf "\n\n Selected Menu: $ans. SQL Backup")
-    HTML+=$(printf "\n<br /> Selected Menu: $ans. SQL Backup")
     sqlbackup
     ARG=
     startup
 elif [[ $ans == "6" ]]; then
     REPORT+=$(printf "\n\n Selected Menu: $ans. Entered Unpacking Selection")
-    HTML+=$(printf "\n<br /> Selected Menu: $ans. Entered Unpacking Selection")
     decompress
     ARG=
     startup
 elif [[ $ans == "7" ]]; then
     REPORT+=$(printf "\n\n Entered Remove Backup")
-    HTML+=$(printf "\n<br /> Entered Remove Backup")
     removeold
     ARG=
     startup
@@ -378,7 +228,6 @@ elif [[ $ans == "8" ]]; then
     startup
 elif [[ $ans == "11" && $ARG == "11" ]]; then
     REPORT+=$(printf "\n\n Running CRONJOB")
-    HTML+=$(printf "\n<br /> Running CRONJOB")
     if [[ $DOW == "1" ]]; then
         full
         quit
@@ -413,7 +262,6 @@ fi
 ##-----------------------------##
 function production {
 REPORT+=$(printf "\n\n Entered Maintenance Mode Menu")
-HTML+=$(printf "<br /><br />\n<blockquote> Entered Maintenance Mode Menu")
 printf "\n Maintenance Mode is set to '${MM}' \n"
 if [[ ${MM} == off ]]; then
     prompt_confirm " Setting Maintenance Mode ON"
@@ -422,7 +270,6 @@ if [[ ${MM} == off ]]; then
     else
         echo " Maintenance left ${MM}"
         REPORT+=$(printf "\n Maintenance not changed. status: ${MM}")
-        HTML+=$(printf "<br />\n Maintenance not changed. status: ${MM}")
     fi
 else
     prompt_confirm " Setting Maintenance Mode OFF"
@@ -431,11 +278,9 @@ else
     else
         echo " Maintenance left ${MM}"
         REPORT+=$(printf "\n Maintenance not changed. status: ${MM}")
-        HTML+=$(printf "<br />\n Maintenance not changed. status: ${MM}")
     fi
 fi
 REPORT+=$(printf "\n Exited Maintenance Mode Menu")
-HTML+=$(printf "<br />\n Exited Maintenance Mode Menu</blockquote>")
 printf "\n Maintenance mode. status: '${MM}' \n Finished"
 press 3
 }
@@ -450,7 +295,6 @@ if [[ ! -d $BACKUP_DIR/$WEEK/$DOW/ ]]; then
    sudo -u ${HTUSER} mkdir -p $BACKUP_DIR/$WEEK/$DOW/
 fi
 REPORT+=$(printf "\n\n Started Full Backup on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n Started Full Backup on: $(date +%x-%H:%M:%S)")
 rm "${LATEST_LINK}"
 rm "${LATEST_LINK}.sql"
 rm "${LATEST_DATA}"
@@ -459,7 +303,6 @@ maintenance on
 ## backup Nextcloud installation /var/www/nextcloud
 printf "\n Back-up ${NCPATH} to ${BACKUP_PATH} \n"
 REPORT+=$(printf "\n\n Backup of ${NCPATH} started on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br />\n Backup of ${NCPATH} started on: $(date +%x-%H:%M:%S)")
  rsync -ah --stats \
  ${NCPATH}/ \
  ${BACKUP_PATH}/ \
@@ -468,84 +311,37 @@ rout=$?
 RSYNC=$(</tmp/rsync.log)
 REPORT+=$(printf "\n rsync exit code $rout \n rsync output: \n${RSYNC}")
 sudo -u ${HTUSER} ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
-HTML+=$(printf "<br /><br />\n
-<section class=\"scrollbox\">\n
-  <input type=\"checkbox\" name=\"collapse\" id=\"handle1\" checked=\"checked\">\n
-  <h2 class=\"handle\">\n
-    <label for=\"handle1\">RSYNC log of ${NCPATH}:</label>\n
-  </h2>\n
-  <div class=\"content\">\n
-    <p><strong>RSYNC exit code: $rout</strong></p>\n
-    <blockquote><p>
-")
-
-while read line; do
- HTML+=$(printf "$line<br />")
-done < /tmp/rsync.log
 rm /tmp/rsync.log
-
-HTML+=$(printf '
-    </blockquote></p>
-  </div>
-</section>
-')
-
 REPORT+=$(printf "\n Backup of ${NCPATH} completed on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br />\n Backup of ${NCPATH} completed on: $(date +%x-%H:%M:%S)")
+
 ## Backup USER DATA Directory
  printf "\n Back-up ${DATADIR} to ${BACKUP_DATA} \n"
 REPORT+=$(printf "\n\n Backup of ${DATADIR} started on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n Backup of ${DATADIR} started on: $(date +%x-%H:%M:%S)")
  rsync -ah --stats \
- --exclude={'lost+found','Films/','muziek/','jamesbond/','var/','mirror/','skel/','vincent@vstans.nl/','updater-*'} \
+ --exclude={'lost+found','updater-*'} \
  ${DATADIR}/ \
  ${BACKUP_DATA}/ \
  &>/tmp/rsync.log
 rout=$?
 REPORT+=$(printf "\n rsync exit code: $rout")
 RSYNC=$(</tmp/rsync.log)
-# rm /tmp/rsync.log
 REPORT+=$(printf "\n rsync output: \n${RSYNC}")
 sudo -u ${HTUSER} ln -s "${BACKUP_DATA}" "${LATEST_DATA}"
-HTML+=$(printf "<br /><br />\n
-<section class=\"scrollbox\">\n
-  <input type=\"checkbox\" name=\"collapse\" id=\"handle2\">\n
-  <h2 class=\"handle\">\n
-    <label for=\"handle2\">RSYNC log of ${DATADIR}:</label>\n
-  </h2>\n
-  <div class=\"content\">\n
-    <p><strong>RSYNC exit code: $rout</strong></p>\n
-    <blockquote><p>
-")
-
-while read line; do
- HTML+=$(printf "$line<br />")
-done < /tmp/rsync.log
 rm /tmp/rsync.log
-
-HTML+=$(printf '
-    </blockquote></p>
-  </div>
-</section>
-')
-
 REPORT+=$(printf "\n Backup of ${DATADIR} completed on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br />\n Backup of ${DATADIR} completed on: $(date +%x-%H:%M:%S)")
+
 ## Backup SQL DATABASE
  sqlbackup
  maintenance off
  printf "\n\n Full Back-up of Week $WEEK Completed on: $(date +%x-%H:%M:%S)"
  REPORT+=$(printf "\n\n Full Back-up of Week $WEEK Completed on: $(date +%x-%H:%M:%S)")
- HTML+=$(printf "<br /><br />\n Full Back-up of Week $WEEK Completed on: $(date +%x-%H:%M:%S)")
 }
-
 
 ##-------------------------------##
 ##- Menu 3 # Incremental Backup -##
 ##-------------------------------##
 function ibackup {
 REPORT+=$(printf "\n\n Started Incremental Backup on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n Started Incremental Backup on: $(date +%x-%H:%M:%S)")
 maintenance on
 printf "\n Back-up ${NCPATH} \n"
 if [[ ! -d $BACKUP_DIR/$WEEK/$DOW/ ]]; then
@@ -553,7 +349,6 @@ if [[ ! -d $BACKUP_DIR/$WEEK/$DOW/ ]]; then
 fi
 ## Incremental backup Nextcloud installation /var/www/nextcloud
 REPORT+=$(printf "\n\n Backup of ${NCPATH} started on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n Backup of ${NCPATH} started on: $(date +%x-%H:%M:%S)")
  rsync -avh --stats --delete ${NCPATH}/ \
  --link-dest "${LATEST_LINK}" \
  ${BACKUP_PATH}/ \
@@ -561,27 +356,7 @@ HTML+=$(printf "<br /><br />\n Backup of ${NCPATH} started on: $(date +%x-%H:%M:
 rout=$?
 RSYNC=$(</tmp/rsync.log)
 REPORT+=$(printf "\n rsync exit code: $rout\n rsync output: \n${RSYNC}\n\n Backup of ${NCPATH} completed on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n
-<section class=\"scrollbox\">\n
-  <input type=\"radio\" name=\"collapse\" id=\"handle1\" checked=\"\">\n
-  <h2 class=\"handle\">\n
-    <label for=\"handle1\">RSYNC log of ${NCPATH}:</label>\n
-  </h2>\n
-  <div class=\"content\">\n
-    <p><strong>RSYNC exit code: $rout</strong></p>\n
-    <blockquote><p>
-")
-
-while read line; do
- HTML+=$(printf "$line<br />")
-done < /tmp/rsync.log
 rm /tmp/rsync.log
-
-HTML+=$(printf '
-    </blockquote></p>
-  </div>
-</section>
-')
 
 if [[ -d "${LATEST_LINK}" ]]; then
     echo
@@ -591,9 +366,8 @@ sudo -u ${HTUSER} ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
 ## Incremental backup USER DATA
 printf "\n Back-up ${DATADIR} \n"
 REPORT+=$(printf "\n\n Backup of ${DATADIR} started on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n Backup of ${DATADIR} started on: $(date +%x-%H:%M:%S)")
  rsync -avh --stats --delete \
-  --exclude={'lost+found','Films/','muziek/','jamesbond/','var/','mirror/','skel/','vincent@vstans.nl/','updater-*'} \
+  --exclude={'lost+found','updater-*'} \
   ${DATADIR}/ \
   --link-dest "${LATEST_DATA}" \
   ${BACKUP_DATA}/ \
@@ -601,42 +375,20 @@ HTML+=$(printf "<br /><br />\n Backup of ${DATADIR} started on: $(date +%x-%H:%M
 rout=$?
 RSYNC=$(</tmp/rsync.log)
 REPORT+=$(printf "\n\nrsync exit code: $rout\n rsync output: \n${RSYNC}\n\n Backup of ${DATADIR} completed on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n
-<section class=\"scrollbox\">\n
-  <input type=\"radio\" name=\"collapse\" id=\"handle2\" checked=\"checked\">\n
-  <h2 class=\"handle\">\n
-    <label for=\"handle2\">RSYNC log of ${DATADIR}:</label>\n
-  </h2>\n
-  <div class=\"content\">\n
-    <p><strong>RSYNC exit code: $rout</strong></p>\n
-    <blockquote><p>
-")
-
-while read line; do
- HTML+=$(printf "$line<br />")
-done < /tmp/rsync.log
 rm /tmp/rsync.log
-
-HTML+=$(printf '
-    </blockquote></p>
-  </div>
-</section>
-')
  if [[ -d "${LATEST_DATA}" ]]; then
      echo
      rm "${LATEST_DATA}"
  fi
  sudo -u ${HTUSER} ln -s "${BACKUP_DATA}" "${LATEST_DATA}"
+
 ## Backup SQL DATABASE
 sqlbackup
 maintenance off
 delsql $(( ${DOW} - 2 ))
 printf "\n\n Incremental Back-up of Day $DOW $(date +%A) Completed on: $(date +%x-%H:%M:%S)"
 REPORT+=$(printf "\n\n Incremental Back-up of Day $DOW $(date +%A) Completed on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n Incremental Back-up of Day $DOW $(date +%A) Completed on: $(date +%x-%H:%M:%S)")
 }
-
-
 
 ##---------------------------##
 ##- Menu 4 # Restore Backup -##
@@ -719,18 +471,15 @@ fi
 ##--------------------------------##
 function sqlbackup {
 REPORT+=$(printf "\n\n Backup of DATABASE ${DATABASE} started on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /><br />\n Backup of DATABASE ${DATABASE} started on: $(date +%x-%H:%M:%S)")
 
 if [[ $MM == off ]]; then
     maintenance on
 fi
 REPORT+=$(printf "\n Back-up SQL Database to ${BACKUP_PATH}.sql")
-HTML+=$(printf "<br />\n<blockquote> Back-up SQL Database to ${BACKUP_PATH}.sql")
 printf "\n Back-up SQL Database to ${BACKUP_PATH}.sql \n"
 mysqldump --single-transaction --default-character-set=utf8mb4 -u ${SQLUSER} -p${DBP} ${DATABASE} > ${BACKUP_PATH}.sql
 mout=$?
 REPORT+=$(printf "\n mysqldump exit code: $mout")
-HTML+=$(printf "<br />\n mysqldump exit code: $mout </blockquote>")
 printf "\n mysqldump exit code: $mout"
 chown ${HTUSER}:${HTGROUP} ${BACKUP_PATH}.sql
 
@@ -745,14 +494,8 @@ if [[ $finished == 1 && $ARG == 5 || $ans == 5 ]]; then
 fi
 sudo -u www-data sed -i "/Database: nextcloud/i-- Nextcloud Version: ${VERSION}" ${BACKUP_PATH}.sql
 REPORT+=$(printf "\n Backup of DATABASE ${DATABASE} completed on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "<br /> Backup of DATABASE ${DATABASE} completed on: $(date +%x-%H:%M:%S)")
 head -n6 ${BACKUP_PATH}.sql > /tmp/fogd
 REPORT+=$(printf "\n\n mysqldump head: \n $(cat /tmp/fogd) ")
-HTML+=$(printf "<br /> mysqldump head:\n <blockquote> ")
-while read line; do
- HTML+=$(printf "\n $line<br />")
-done < /tmp/fogd
-HTML+=$(printf "\n </blockquote>")
 rm /tmp/fogd
 }
 
@@ -774,7 +517,6 @@ if [[ -f $seek ]]; then
         tar -xpf "${selected_zip::-4}" -C /
         tout=$?
         rm ${selected_zip::-4}
-        HTML+=$(printf "<br /><br /> Unpack: ${selected_zip}<br /> bzip2 exit code: $bout. <br /> tar exit code: $tout.")
     else
         echo " Nothing Unpacked "
         press 5
@@ -807,7 +549,6 @@ if [[ -d $seek ]]; then
     if [[ $ans == [yY] ]]; then
         rm -Rf "${selected_backup}"
         REPORT+=$(printf "\n\n Removed Week/Day: $del_week - ${selected_backup}")
-        HTML+=$(printf "<br /> Removed Week/Day: $del_week - ${selected_backup}")
     else
         echo " Nothing removed "
         press 3
@@ -833,7 +574,6 @@ fi
 ##---------------------------------------
 function compress_old () {
 REPORT+=$(printf "\n\n Entered Compression.")
-HTML+=$(printf "<br />\n Entered Compression. on: $(date +%x-%H:%M:%S)")
 old_week=$1
 
 if [[ -z $old_week ]]; then
@@ -853,57 +593,46 @@ echo "Selected week: $old_week"
 
 if [[ -d ${BACKUP_DIR}/$old_week ]]; then
     REPORT+=$(printf "\n\n Compressing ${BACKUP_DIR}/$old_week")
-    HTML+=$(printf "<br /><br />\n<blockquote> Compressing ${BACKUP_DIR}/$old_week")
     echo "Compressing ${BACKUP_DIR}/$old_week"
     sudo -u ${HTUSER} tar -cpf ${BACKUP_DIR}/$old_week.tar ${BACKUP_DIR}/$old_week
     tout=$?
-    HTML+=$(printf "<br />\n Tar exit code: $tout.<br />\n Tar Compression completed on: $(date +%x-%H:%M:%S)")
     rm -Rf ${BACKUP_DIR}/$old_week
 #     bzip2 -9 ${BACKUP_DIR}/$old_week.tar
 #    bout=$?
 #    REPORT+=$(printf "\n Tar exit code: $tout.\n bzip2 exit code: $bout.\n Completed Compression.")
-#    HTML+=$(printf ".<br />\n bzip2 exit code: $bout.<br />\n bzip2 Compression Completed on: $(date +%x-%H:%M:%S)")
 else
     REPORT+=$(printf "\n No backup of week $old_week Found \n Exited Compression ")
-    HTML+=$(printf "<br />\n No backup of week $old_week Found <br /> Exited Compression ")    
     echo " No Backup of week $old_week Found. "
 fi
 
 REPORT+=$(printf "\n\n Exited Compression on: $(date +%x-%H:%M:%S)")
-HTML+=$(printf "</blockquote><br /><br />\n Exited Compression on: $(date +%x-%H:%M:%S)") 
 }
 
 
 
 maintenance () {
 REPORT+=$(printf "\n\n Entered Maintenance Mode Menu")
-HTML+=$(printf "<br /><br />\n<blockquote> Entered Maintenance Mode Menu")
 if [[ $1 == off && ! ${MM} == off ]]; then
     REPORT+=$(printf "\n Turning maintenance:mode --off")
-    HTML+=$(printf "<br />\n Turning maintenance:mode --off")
     printf "\n Turning maintenance:mode --off \n"
     sudo -u ${HTUSER} php ${NCPATH}/occ maintenance:mode --off
     MM='off'
 elif [[ $1 == on && ! ${MM} == on ]]; then
     REPORT+=$(printf "\n Turning maintenance:mode --on")
-    HTML+=$(printf "<br />\n Turning maintenance:mode --on")
     printf "\n Turning maintenance:mode --on \n"
     sudo -u ${HTUSER} php ${NCPATH}/occ maintenance:mode --on
     MM='on'
 else
     printf "\n Maintenance not changed"
     REPORT+=$(printf "\n Maintenance not changed. status: ${MM}")
-    HTML+=$(printf "<br />\n Maintenance not changed. status: ${MM}")
 fi
 REPORT+=$(printf "\n Exited Maintenance Mode Menu")
-HTML+=$(printf "<br />\n Exited Maintenance Mode Menu</blockquote>")
 }
 
 
 
 delsql() {
 REPORT+=$(printf "\n\n Entered SQL Clean up ")
-HTML+=$(printf "<br /><br /> Entered SQL Clean up ")
  if [[ ! ${DOW} =~ ^(1|2)$ ]]; then
       echo " Removing Previous SQL"
     old_day=$1
@@ -911,21 +640,17 @@ HTML+=$(printf "<br /><br /> Entered SQL Clean up ")
 
       if [[ -f $old_sql ]]; then
          REPORT+=$(printf "\n Removing: $old_sql ")
-         HTML+=$(printf "<br /> Removing: $old_sql ")
           echo " Removing: $old_sql "
           rm $old_sql
        else
          REPORT+=$(printf "\n No old SQL backup Found ")
-         HTML+=$(printf "<br /> No old SQL backup Found ")
           echo " No SQL File Found "
       fi
 
     REPORT+=$(printf "\n Finished SQL Clean up")
-    HTML+=$(printf "<br /> Finished SQL Clean up")
      echo " Finished SQL Clean up "
   else
     REPORT+=$(printf "\n No SQL Backup to Clean up.")
-    HTML+=$(printf "<br /> No SQL Backup to Clean up.")
  fi
 }
 
@@ -981,8 +706,7 @@ sendmessage() {
 ## Menu 0 # Clean script exit
 function quit {
  REPORT+=$(printf "\n\n END of REPORT")
- HTML+=$(printf "<br />\n<br />\n END of REPORT \n</body>\n</html>")
- sendmessage "${REPORT}" "${HTML}"
+ sendmessage "${REPORT}"
  echo 1>&3
  echo "Peace out." 1>&3
  exec 3>&-
